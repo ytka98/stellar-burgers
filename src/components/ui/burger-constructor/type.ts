@@ -8,3 +8,5 @@ export type BurgerConstructorUIProps = {
   onOrderClick: () => void;
   closeOrderModal: () => void;
 };
+
+export type TTabMode = 'bun' | 'sauce' | 'main';
