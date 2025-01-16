@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect, FC } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useSelector } from 'react-redux';
-import { BurgerIngredientsUI } from '../ui/burger-ingredients';
-import { TTabMode } from '../ui/burger-ingredients/type';
-import { getIngredients } from '../../services/slices/burger-ingredients';
+
+import { TTabMode } from '@utils-types';
+import { BurgerIngredientsUI } from '@ui';
+import { useSelector } from '../../services/store';
+import { getIngredients } from '../../services/slices/ingredients-slice';
 
 export const BurgerIngredients: FC = () => {
-  /** TODO: взять переменные из стора */
-  const { buns, mains, sauces } = useSelector(getIngredients); 
-  // Берем buns mains sauces
+  const { buns, mains, sauces } = useSelector(getIngredients);
+
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
   const titleMainRef = useRef<HTMLHeadingElement>(null);

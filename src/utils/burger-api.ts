@@ -1,22 +1,27 @@
 import { setCookie, getCookie } from './cookie';
 import { TIngredient, TOrder, TOrdersData, TUser } from './types';
 
+// URL для API, берется из переменных окружения
 const URL = process.env.BURGER_API_URL;
 
+// Функция для проверки ответа от сервера
 const checkResponse = <T>(res: Response): Promise<T> =>
   res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 
+// Поле для определения успешности ответа
 type TServerResponse<T> = {
   success: boolean;
 } & T;
 
+// Функция для обновления токенов (refreshToken)
 type TRefreshResponse = TServerResponse<{
-  refreshToken: string;
-  accessToken: string;
+  refreshToken: string;  // Обновленный refreshToken
+  accessToken: string;   // Новый accessToken
 }>;
 
-export const refreshToken = (): Promise<TRefreshResponse> =>
-  fetch(`${URL}/auth/token`, {
+export const refreshToken = (): Promise<TRefreshResponse> => {
+  console.log('Refreshing token...');
+  return fetch(`${URL}/auth/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8'
@@ -27,14 +32,19 @@ export const refreshToken = (): Promise<TRefreshResponse> =>
   })
     .then((res) => checkResponse<TRefreshResponse>(res))
     .then((refreshData) => {
+      console.log('New token data:', refreshData);  // Логируем новые токены
       if (!refreshData.success) {
+        console.log('Failed to refresh tokens');
         return Promise.reject(refreshData);
       }
       localStorage.setItem('refreshToken', refreshData.refreshToken);
       setCookie('accessToken', refreshData.accessToken);
+      console.log('Tokens updated in storage and cookies');
       return refreshData;
     });
+};
 
+// Функция для отправки запроса с возможностью обновления токенов в случае ошибки
 export const fetchWithRefresh = async <T>(
   url: RequestInfo,
   options: RequestInit
@@ -43,12 +53,15 @@ export const fetchWithRefresh = async <T>(
     const res = await fetch(url, options);
     return await checkResponse<T>(res);
   } catch (err) {
+    console.log('Error occurred during fetch:', err);
     if ((err as { message: string }).message === 'jwt expired') {
+      console.log('JWT token expired. Attempting to refresh token...');
       const refreshData = await refreshToken();
       if (options.headers) {
         (options.headers as { [key: string]: string }).authorization =
           refreshData.accessToken;
       }
+      console.log('Retrying request with new token...');
       const res = await fetch(url, options);
       return await checkResponse<T>(res);
     } else {
@@ -75,7 +88,7 @@ export const getIngredientsApi = () =>
   fetch(`${URL}/ingredients`)
     .then((res) => checkResponse<TIngredientsResponse>(res))
     .then((data) => {
-      console.log('API Response:', data);  
+      console.log('Ingredients fetched:', data);
       if (data?.success) return data.data;
       return Promise.reject(data);
     });
@@ -84,6 +97,7 @@ export const getFeedsApi = () =>
   fetch(`${URL}/orders/all`)
     .then((res) => checkResponse<TFeedsResponse>(res))
     .then((data) => {
+      console.log('Feeds data fetched:', data);
       if (data?.success) return data;
       return Promise.reject(data);
     });
@@ -96,6 +110,7 @@ export const getOrdersApi = () =>
       authorization: getCookie('accessToken')
     } as HeadersInit
   }).then((data) => {
+    console.log('Orders data fetched:', data);
     if (data?.success) return data.orders;
     return Promise.reject(data);
   });
@@ -116,6 +131,7 @@ export const orderBurgerApi = (data: string[]) =>
       ingredients: data
     })
   }).then((data) => {
+    console.log('New order response:', data);
     if (data?.success) return data;
     return Promise.reject(data);
   });
@@ -154,6 +170,7 @@ export const registerUserApi = (data: TRegisterData) =>
   })
     .then((res) => checkResponse<TAuthResponse>(res))
     .then((data) => {
+      console.log('Register response:', data);
       if (data?.success) return data;
       return Promise.reject(data);
     });
@@ -173,6 +190,7 @@ export const loginUserApi = (data: TLoginData) =>
   })
     .then((res) => checkResponse<TAuthResponse>(res))
     .then((data) => {
+      console.log('Login response:', data);
       if (data?.success) return data;
       return Promise.reject(data);
     });
@@ -187,6 +205,7 @@ export const forgotPasswordApi = (data: { email: string }) =>
   })
     .then((res) => checkResponse<TServerResponse<{}>>(res))
     .then((data) => {
+      console.log('Password reset request:', data);
       if (data?.success) return data;
       return Promise.reject(data);
     });
@@ -201,6 +220,7 @@ export const resetPasswordApi = (data: { password: string; token: string }) =>
   })
     .then((res) => checkResponse<TServerResponse<{}>>(res))
     .then((data) => {
+      console.log('Password reset success:', data);
       if (data?.success) return data;
       return Promise.reject(data);
     });
@@ -212,6 +232,9 @@ export const getUserApi = () =>
     headers: {
       authorization: getCookie('accessToken')
     } as HeadersInit
+  }).then((data) => {
+    console.log('User data fetched:', data);
+    return data;
   });
 
 export const updateUserApi = (user: Partial<TRegisterData>) =>
@@ -222,6 +245,9 @@ export const updateUserApi = (user: Partial<TRegisterData>) =>
       authorization: getCookie('accessToken')
     } as HeadersInit,
     body: JSON.stringify(user)
+  }).then((data) => {
+    console.log('Update user response:', data);
+    return data;
   });
 
 export const logoutApi = () =>
