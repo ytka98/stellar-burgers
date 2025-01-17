@@ -7,9 +7,11 @@ import { useSelector } from '../../services/store';
 import { getIngredients } from '../../services/slices/ingredients-slice';
 
 export const BurgerIngredients: FC = () => {
+  // Получаем ингредиенты из Redux-хранилища
   const { buns, mains, sauces } = useSelector(getIngredients);
-
+  // Состояние текущей активной вкладки
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
+  // Рефы для заголовков секций
   const titleBunRef = useRef<HTMLHeadingElement>(null);
   const titleMainRef = useRef<HTMLHeadingElement>(null);
   const titleSaucesRef = useRef<HTMLHeadingElement>(null);
@@ -17,33 +19,47 @@ export const BurgerIngredients: FC = () => {
   const [bunsRef, inViewBuns] = useInView({
     threshold: 0
   });
-
   const [mainsRef, inViewFilling] = useInView({
     threshold: 0
   });
-
   const [saucesRef, inViewSauces] = useInView({
     threshold: 0
   });
 
+  // Обновление текущей вкладки при изменении видимости секций
   useEffect(() => {
-    if (inViewBuns) {
-      setCurrentTab('bun');
-    } else if (inViewSauces) {
-      setCurrentTab('sauce');
-    } else if (inViewFilling) {
-      setCurrentTab('main');
+    switch (true) {
+      case inViewBuns:
+        setCurrentTab('bun');
+        break;
+      case inViewSauces:
+        setCurrentTab('sauce');
+        break;
+      case inViewFilling:
+        setCurrentTab('main');
+        break;
+      default:
+        break;
     }
   }, [inViewBuns, inViewFilling, inViewSauces]);
 
   const onTabClick = (tab: string) => {
     setCurrentTab(tab as TTabMode);
-    if (tab === 'bun')
-      titleBunRef.current?.scrollIntoView({ behavior: 'smooth' });
-    if (tab === 'main')
-      titleMainRef.current?.scrollIntoView({ behavior: 'smooth' });
-    if (tab === 'sauce')
-      titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
+
+    // Прокрутка к соответствующей секции при клике
+    switch (tab) {
+      case 'bun':
+        titleBunRef.current?.scrollIntoView({ behavior: 'smooth' });
+        break;
+      case 'main':
+        titleMainRef.current?.scrollIntoView({ behavior: 'smooth' });
+        break;
+      case 'sauce':
+        titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
+        break;
+      default:
+        break;
+    }
   };
 
   return (

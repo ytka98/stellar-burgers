@@ -13,12 +13,20 @@ export const IngredientsCategory = forwardRef<
 
   const ingredientsCounters = useMemo(() => {
     const { bun, ingredients } = burgerConstructor;
-    const counters: { [key: string]: number } = {};
-    ingredients.forEach((ingredient: TIngredient) => {
-      if (!counters[ingredient._id]) counters[ingredient._id] = 0;
-      counters[ingredient._id]++;
-    });
-    if (bun) counters[bun._id] = 2;
+    // Используем reduce для подсчета количества ингредиентов
+    const counters = ingredients.reduce(
+      (acc: { [key: string]: number }, ingredient: TIngredient) => {
+        // Увеличиваем счетчик ингредиента, если он уже есть, или инициализируем его с 1
+        acc[ingredient._id] = (acc[ingredient._id] || 0) + 1;
+        return acc;
+      },
+      {}
+    );
+    if (bun) {
+      // Если есть булочка (bun), устанавливаем ее количество равным 2
+      counters[bun._id] = 2;
+    }
+    // Возвращаем объект с подсчитанными ингредиентами
     return counters;
   }, [burgerConstructor]);
 

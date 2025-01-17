@@ -4,20 +4,20 @@ import { getFeedsApi } from '@api';
 
 export const getFeedsThunk = createAsyncThunk('orders/getAll', getFeedsApi);
 
-type TFeeds = {
+type TFeed = {
   orders: TOrder[];
   total: number;
   totalToday: number;
 };
 
-const initialState: TFeeds = {
+const initialState: TFeed = {
   orders: [],
   total: 0,
   totalToday: 0
 };
 
 const feedsSlice = createSlice({
-  name: 'feeds',
+  name: 'feed',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -29,6 +29,5 @@ const feedsSlice = createSlice({
   }
 });
 
-
 export const feedsReducer = feedsSlice.reducer;
-export const getFeedsState = (state: { feeds: TFeeds }) => state.feeds;
+export const getFeedsState = (state: { feeds: TFeed }) => state.feeds;

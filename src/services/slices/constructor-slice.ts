@@ -12,7 +12,11 @@ export const initialState: TConstructorState = {
 };
 
 // Вспомогательная функция для перемещения элементов в массиве
-const moveItemInArray = (arr: TConstructorIngredient[], index1: number, index2: number): void => {
+const moveItemInArray = (
+  arr: TConstructorIngredient[],
+  index1: number,
+  index2: number
+): void => {
   [arr[index1], arr[index2]] = [arr[index2], arr[index1]];
 };
 
@@ -23,9 +27,14 @@ const burgerConstructor = createSlice({
     // Добавление ингредиента в конструктор
     addItemToConstructor: {
       reducer: (state, action: PayloadAction<TConstructorIngredient>) => {
-        action.payload.type === 'bun' 
-          ? state.bun = action.payload 
-          : state.ingredients.push(action.payload);
+        switch (action.payload.type) {
+          case 'bun':
+            state.bun = action.payload;
+            break;
+          default:
+            state.ingredients.push(action.payload);
+            break;
+        }
       },
       prepare: (ingredient: TIngredient) => ({
         payload: { ...ingredient, id: nanoid() }
@@ -35,17 +44,31 @@ const burgerConstructor = createSlice({
     // Удаление ингредиента по ID
     removeItemFromConstructor: (state, action: PayloadAction<string>) => {
       const { payload: id } = action;
-      state.ingredients = state.ingredients.filter(item => item.id !== id);
+      state.ingredients = state.ingredients.filter((item) => item.id !== id);
     },
 
     // Перемещение ингредиента в конструкторе
     moveItemInConstructor: (
       state,
-      { payload: { index, move } }: PayloadAction<{ index: number; move: 'up' | 'down' }>
+      {
+        payload: { index, move }
+      }: PayloadAction<{ index: number; move: 'up' | 'down' }>
     ) => {
-      const targetIndex = move === 'up' ? index - 1 : index + 1;
-      if (targetIndex >= 0 && targetIndex < state.ingredients.length) {
-        moveItemInArray(state.ingredients, index, targetIndex);
+      switch (move) {
+        case 'up': {
+          const targetIndex = index - 1;
+          if (targetIndex >= 0 && targetIndex < state.ingredients.length) {
+            moveItemInArray(state.ingredients, index, targetIndex);
+          }
+          break;
+        }
+        case 'down': {
+          const targetIndex = index + 1;
+          if (targetIndex >= 0 && targetIndex < state.ingredients.length) {
+            moveItemInArray(state.ingredients, index, targetIndex);
+          }
+          break;
+        }
       }
     },
 
@@ -66,4 +89,6 @@ export const {
 } = burgerConstructor.actions;
 
 // Селектор для получения состояния конструктора
-export const getConstructorState = (state: { burgerConstructor: TConstructorState }) => state.burgerConstructor;
+export const getConstructorState = (state: {
+  burgerConstructor: TConstructorState;
+}) => state.burgerConstructor;

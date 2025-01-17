@@ -6,10 +6,10 @@ export function getCookie(name: string): string | undefined {
       '(?:^|; )' +
         // Экранируем специальные символы в имени cookie для использования в регулярных выражениях
         name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') +
-        '=([^;]*)'  // Ищем значение cookie, которое идет после '='
+        '=([^;]*)' // Ищем значение cookie, которое идет после '='
     )
   );
-  
+
   // Если cookie найдена, декодируем её значение и возвращаем, иначе возвращаем undefined
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
@@ -27,30 +27,30 @@ export function setCookie(
   };
 
   let exp = props.expires;
-  
+
   // Если срок действия cookie задан числом (в секундах), вычисляем дату окончания
   if (exp && typeof exp === 'number') {
     const d = new Date();
-    d.setTime(d.getTime() + exp * 1000);  // Устанавливаем время окончания cookie
-    exp = props.expires = d;  // Преобразуем его в объект Date
+    d.setTime(d.getTime() + exp * 1000); // Устанавливаем время окончания cookie
+    exp = props.expires = d; // Преобразуем его в объект Date
   }
 
   // Если срок действия cookie является объектом Date, преобразуем его в строку UTC
   if (exp && exp instanceof Date) {
     props.expires = exp.toUTCString();
   }
-  
+
   // Кодируем значение cookie для корректной передачи в браузере
   value = encodeURIComponent(value);
-  
+
   // Начинаем формировать строку для установки cookie
   let updatedCookie = name + '=' + value;
-  
+
   // Добавляем остальные параметры (например, expires, path и другие)
   for (const propName in props) {
     updatedCookie += '; ' + propName;
     const propValue = props[propName];
-    
+
     // Если значение параметра не true, добавляем его после '='
     if (propValue !== true) {
       updatedCookie += '=' + propValue;

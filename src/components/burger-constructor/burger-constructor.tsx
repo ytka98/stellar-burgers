@@ -1,5 +1,4 @@
 import { FC, useMemo, useCallback } from 'react';
-import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from '../../services/store';
@@ -18,23 +17,25 @@ export const BurgerConstructor: FC = () => {
   const { orderRequest, order } = useSelector((state) => state.newOrder);
   const user = useSelector(getUser);
 
-  const closeOrderModal = useCallback(() => {
+  // Закрытие модального окна заказа
+  const handleCloseModal = useCallback(() => {
     dispatch(clearOrder());
     dispatch(resetConstructor());
     navigate('/');
   }, [dispatch, navigate]);
 
+  // Подсчёт общей стоимости
   const price = useMemo(() => {
-    const totalBunPrice = bun ? bun.price * 2 : 0;
-    const totalIngredientsPrice = ingredients.reduce(
-      (sum: number, { price }: TConstructorIngredient) => sum + price,
-      0
-    );
-    return totalBunPrice + totalIngredientsPrice; 
+    const bunCost = (bun?.price || 0) * 2;
+    const ingredientsCost = ingredients
+      .map((item) => item.price)
+      .reduce((a, b) => a + b, 0);
+    return bunCost + ingredientsCost;
   }, [bun, ingredients]);
+
+  // Обработка клика на "оформить заказ"
   const onOrderClick = useCallback(() => {
     if (!bun || orderRequest || !ingredients.length) return;
-
     if (!user) {
       navigate('/login');
       return;
@@ -42,7 +43,7 @@ export const BurgerConstructor: FC = () => {
 
     const dataToOrder = [
       bun._id,
-      ...ingredients.map(({ _id }) => _id),
+      ...ingredients.map((item) => item._id),
       bun._id
     ];
     dispatch(newOrderThunk(dataToOrder));
@@ -55,7 +56,7 @@ export const BurgerConstructor: FC = () => {
       constructorItems={{ bun, ingredients }}
       orderModalData={order}
       onOrderClick={onOrderClick}
-      closeOrderModal={closeOrderModal}
+      closeOrderModal={handleCloseModal}
     />
   );
 };

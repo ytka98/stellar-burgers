@@ -15,8 +15,8 @@ type TServerResponse<T> = {
 
 // Функция для обновления токенов (refreshToken)
 type TRefreshResponse = TServerResponse<{
-  refreshToken: string;  // Обновленный refreshToken
-  accessToken: string;   // Новый accessToken
+  refreshToken: string; // Обновленный refreshToken
+  accessToken: string; // Новый accessToken
 }>;
 
 export const refreshToken = (): Promise<TRefreshResponse> => {
@@ -32,7 +32,7 @@ export const refreshToken = (): Promise<TRefreshResponse> => {
   })
     .then((res) => checkResponse<TRefreshResponse>(res))
     .then((refreshData) => {
-      console.log('New token data:', refreshData);  // Логируем новые токены
+      console.log('New token data:', refreshData); // Логируем новые токены
       if (!refreshData.success) {
         console.log('Failed to refresh tokens');
         return Promise.reject(refreshData);

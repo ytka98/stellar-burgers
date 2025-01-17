@@ -3,11 +3,11 @@ import * as slices from '@slices';
 
 const rootReducer = combineReducers({
   user: slices.userReducer,
-  ingredients: slices.ingredientsReducer,
-  orders: slices.ordersReducer,
-  newOrder: slices.newOrderReducer,
+  feeds: slices.feedsReducer,
   burgerConstructor: slices.constructorReducer,
-  feeds: slices.feedsReducer
+  newOrder: slices.newOrderReducer,
+  orders: slices.ordersReducer,
+  ingredients: slices.ingredientsReducer
 });
 
 export { rootReducer };

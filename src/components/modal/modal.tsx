@@ -6,6 +6,7 @@ import { ModalUI } from '@ui';
 
 const modalRoot = document.getElementById('modals');
 
+// Определяем компонент Modal, оборачивая его в memo для предотвращения лишних ререндеров
 export const Modal: FC<TModalProps> = memo(({ title, onClose, children }) => {
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -17,6 +18,7 @@ export const Modal: FC<TModalProps> = memo(({ title, onClose, children }) => {
       document.removeEventListener('keydown', handleEsc);
     };
   }, [onClose]);
+  // Используем ReactDOM.createPortal для рендера модального окна в отдельный DOM-элемент
 
   return ReactDOM.createPortal(
     <ModalUI title={title} onClose={onClose}>

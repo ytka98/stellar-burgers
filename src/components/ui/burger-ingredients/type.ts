@@ -16,4 +16,4 @@ export type BurgerIngredientsUIProps = {
   onTabClick: (val: string) => void;
 };
 
-export type { TTabMode }; 
+export type { TTabMode };

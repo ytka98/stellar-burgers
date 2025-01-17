@@ -1,11 +1,11 @@
 import { PayloadAction, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { deleteCookie, getCookie, setCookie } from '../../utils/cookie';
-import { 
-  registerUserApi, 
-  loginUserApi, 
-  updateUserApi, 
-  logoutApi, 
-  getUserApi 
+import {
+  registerUserApi,
+  loginUserApi,
+  updateUserApi,
+  logoutApi,
+  getUserApi
 } from '@api';
 import { TUser } from '@utils-types';
 
@@ -28,7 +28,7 @@ type TUserState = {
 const initialState: TUserState = {
   isAuthChecked: false,
   user: null,
-  error: null,
+  error: null
 };
 
 // Вспомогательные функции
@@ -64,7 +64,7 @@ const User = createSlice({
     },
     userLogout: (state) => {
       state.user = null;
-    },
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -91,7 +91,7 @@ const User = createSlice({
       .addCase(updateUserAsyncThunk.fulfilled, (state, action) =>
         handleAuthSuccess(state, action)
       );
-  },
+  }
 });
 
 // Асинхронные экшены
@@ -100,20 +100,14 @@ export const registerUserAsyncThunk = createAsyncThunk(
   registerUserApi
 );
 
-export const loginUserAsyncThunk = createAsyncThunk(
-  'user/login',
-  loginUserApi
-);
+export const loginUserAsyncThunk = createAsyncThunk('user/login', loginUserApi);
 
 export const updateUserAsyncThunk = createAsyncThunk(
   'user/update',
   updateUserApi
 );
 
-export const fetchUserAsyncThunk = createAsyncThunk(
-  'user/request',
-  getUserApi
-);
+export const fetchUserAsyncThunk = createAsyncThunk('user/request', getUserApi);
 
 export const verifyUserAuthAsyncThunk = createAsyncThunk(
   'user/checkAuth',

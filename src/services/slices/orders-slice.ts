@@ -34,9 +34,12 @@ const orders = createSlice({
       .addCase(getOrdersThunk.rejected, (state, action) => {
         // Логика при ошибке (например, добавление ошибки в стейт)
       })
-      .addCase(getOrdersThunk.fulfilled, (state, action: PayloadAction<TOrder[]>) => {
-        state.orders = action.payload; // Обновление состояния при успешном выполнении
-      });
+      .addCase(
+        getOrdersThunk.fulfilled,
+        (state, action: PayloadAction<TOrder[]>) => {
+          state.orders = action.payload; // Обновление состояния при успешном выполнении
+        }
+      );
   }
 });
 
