@@ -1,13 +1,12 @@
 import React, { FC } from 'react';
-import { useDispatch } from 'react-redux'; // Импортируем useDispatch
+import { useDispatch } from '../../../services/store'; // Поменял c react-redux на store.ts
 import { logoutUserAsyncThunk } from '../../../services/slices/user-slice';
-import { AppDispatch } from '../../../services/store';
 import { NavLink } from 'react-router-dom';
 import { ProfileMenuUIProps } from './type';
 import styles from './profile-menu.module.css';
 
 export const ProfileMenuUI: FC<ProfileMenuUIProps> = ({ pathname }) => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logoutUserAsyncThunk());
     // Диспатчим асинхронное действие
