@@ -1,22 +1,47 @@
-import { FC } from 'react';
-
+import { FC, useMemo } from 'react';
 import { TOrder } from '@utils-types';
-import { FeedInfoUI } from '../ui/feed-info';
+import { FeedInfoUI } from '@ui';
+import { useSelector } from '../../services/store';
+import { getFeedsState } from '../../services/slices/feed-slice';
 
-const getOrders = (orders: TOrder[], status: string): number[] =>
-  orders
-    .filter((item) => item.status === status)
-    .map((item) => item.number)
+// Функция для получения заказов по статусу
+function getOrders(orders: TOrder[], status: string): number[] {
+  return orders
+    .filter(function (order) {
+      return order.status === status;
+    })
+    .map(function (order) {
+      return order.number;
+    })
     .slice(0, 20);
+}
 
-export const FeedInfo: FC = () => {
-  /** TODO: взять переменные из стора */
-  const orders: TOrder[] = [];
-  const feed = {};
+export const FeedInfo: FC = function () {
+  // Извлечение данных из хранилища
+  const { orders, total, totalToday } = useSelector(getFeedsState);
 
-  const readyOrders = getOrders(orders, 'done');
+  // Мемоизация данных о ленте
+  const feed = useMemo(
+    function () {
+      return { total, totalToday };
+    },
+    [total, totalToday]
+  );
 
-  const pendingOrders = getOrders(orders, 'pending');
+  // Мемоизация готовых и ожидающих заказов
+  const readyOrders = useMemo(
+    function () {
+      return getOrders(orders, 'done');
+    },
+    [orders]
+  );
+
+  const pendingOrders = useMemo(
+    function () {
+      return getOrders(orders, 'pending');
+    },
+    [orders]
+  );
 
   return (
     <FeedInfoUI

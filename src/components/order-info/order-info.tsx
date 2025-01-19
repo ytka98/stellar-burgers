@@ -1,44 +1,50 @@
-import { FC, useMemo } from 'react';
-import { Preloader } from '../ui/preloader';
-import { OrderInfoUI } from '../ui/order-info';
-import { TIngredient } from '@utils-types';
+import { FC, useMemo, useEffect, useState } from 'react';
+import { Preloader } from '@ui';
+import { OrderInfoUI } from '@ui';
+import { TIngredient, TOrder } from '@utils-types';
+import { useSelector } from '../../services/store';
+import { getIngredients } from '../../services/slices/ingredients-slice';
+import { useParams } from 'react-router-dom';
+import { getOrderByNumberApi } from '@api';
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+  // Функция для получения номера заказа из параметров URL
+  const id = useParams().number;
 
-  const ingredients: TIngredient[] = [];
+  const [orderData, setOrderData] = useState<TOrder>();
 
-  /* Готовим данные для отображения */
+  // Функция для получения ингредиентов из хранилища
+  const ingredients = useSelector(getIngredients).ingredients;
+
+  // Хук для получения данных о заказе при монтировании компонента
+  useEffect(() => {
+    getOrderByNumberApi(Number(id)).then((data) => {
+      setOrderData(data.orders[0]);
+    });
+  }, []); // Пустой массив зависимостей для вызова только один раз при монтировании
+
+  // Функция для вычисления информации о заказе, включая ингредиенты и общую стоимость
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 
     const date = new Date(orderData.createdAt);
 
-    type TIngredientsWithCount = {
-      [key: string]: TIngredient & { count: number };
-    };
-
     const ingredientsInfo = orderData.ingredients.reduce(
-      (acc: TIngredientsWithCount, item) => {
-        if (!acc[item]) {
-          const ingredient = ingredients.find((ing) => ing._id === item);
-          if (ingredient) {
-            acc[item] = {
-              ...ingredient,
-              count: 1
-            };
-          }
-        } else {
-          acc[item].count++;
+      (acc: { [key: string]: TIngredient & { count: number } }, item) => {
+        switch (acc[item] === undefined) {
+          case true:
+            const ingredient = ingredients.find((ing) => ing._id === item);
+            if (ingredient) {
+              acc[item] = {
+                ...ingredient,
+                count: 1
+              };
+            }
+            break;
+
+          default:
+            acc[item].count++;
+            break;
         }
 
         return acc;
@@ -46,11 +52,13 @@ export const OrderInfo: FC = () => {
       {}
     );
 
+    // Функция для вычисления общей стоимости
     const total = Object.values(ingredientsInfo).reduce(
       (acc, item) => acc + item.price * item.count,
       0
     );
 
+    // Возвращаем информацию о заказе, включая ингредиенты и общую стоимость
     return {
       ...orderData,
       ingredientsInfo,
