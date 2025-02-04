@@ -3,9 +3,10 @@
  * https://jestjs.io/docs/configuration
  */
 
-import type {Config} from 'jest';
+import { pathsToModuleNameMapper, JestConfigWithTsJest } from 'ts-jest';
+import { compilerOptions } from './tsconfig.json';
 
-const config: Config = {
+const config: JestConfigWithTsJest = {
   preset: 'ts-jest',
   // All imported modules in your tests should be mocked automatically
   // automock: false,
@@ -26,7 +27,7 @@ const config: Config = {
   // collectCoverageFrom: undefined,
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+  coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -34,7 +35,7 @@ const config: Config = {
   // ],
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: "v8",
+  coverageProvider: 'v8',
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
@@ -195,16 +196,7 @@ const config: Config = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
-  moduleNameMapper: {
-    '^@pages/(.*)$': '<rootDir>/src/pages/$1',
-    '^@components/(.*)$': '<rootDir>/src/components/$1',
-    '^@ui/(.*)$': '<rootDir>/src/components/ui/$1',
-    '^@ui-pages/(.*)$': '<rootDir>/src/components/ui/pages/$1',
-    '^@utils-types/(.*)$': '<rootDir>/src/utils/types/$1',
-    '^@api$': '<rootDir>/src/utils/burger-api.ts',
-    '^@slices/(.*)$': '<rootDir>/src/services/slices/$1',
-    '^@selectors/(.*)$': '<rootDir>/src/services/selectors/$1'
-  },
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' })
 };
 
 export default config;
