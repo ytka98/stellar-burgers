@@ -146,4 +146,4 @@ export const getUserError = (state: { user: TUserState }) => state.user.error;
 export const getUserIsAuth = (state: { user: TUserState }) =>
   state.user.isAuthChecked;
 export const getUser = (state: { user: TUserState }) => state.user.user;
-export {initialState}
+export { initialState };

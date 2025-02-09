@@ -1,7 +1,11 @@
-import { initialState, newOrderReducer, newOrderThunk } from './newOrder-slice';
+import {
+  initialState,
+  newOrderReducer,
+  newOrderThunk
+} from '../slices/newOrder-slice';
 import { expect } from '@jest/globals';
 
-describe('Проверка слайса нового заказа', () => {
+describe('Проверка редьюсера нового заказа', () => {
   const mockOrder = {
     success: true,
     name: 'Краторный spicy био-марсианский бургер',
@@ -57,8 +61,8 @@ describe('Проверка слайса нового заказа', () => {
       ],
       _id: '1234567890abcdef12345678',
       owner: {
-        name: 'Test User',
-        email: 'testuser@example.com',
+        name: 'Иван Иванов',
+        email: 'ivan.ivanov@example.com',
         createdAt: '2025-02-08T12:00:00.000Z',
         updatedAt: '2025-02-08T12:05:00.000Z'
       },
@@ -82,19 +86,19 @@ describe('Проверка слайса нового заказа', () => {
     expect(newState).toEqual(expectedState);
   };
 
-  test('Тестирование при обработке запроса', () => {
+  test('Обработка состояния при начале запроса на создание заказа', () => {
     const action = createAction(newOrderThunk.pending.type);
     const expectedState = { ...initialState, orderRequest: true };
     testStateChange(action, expectedState);
   });
 
-  test('Тестирование при ошибке запроса', () => {
+  test('Обработка состояния при ошибке запроса на создание заказа', () => {
     const action = createAction(newOrderThunk.rejected.type);
     const expectedState = { ...initialState, orderRequest: false };
     testStateChange(action, expectedState);
   });
 
-  test('Тестирование при успешной обработке запроса', () => {
+  test('Обработка состояния при успешном создании заказа', () => {
     const action = createAction(newOrderThunk.fulfilled.type, mockOrder);
     const expectedState = {
       ...initialState,

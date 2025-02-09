@@ -1,6 +1,10 @@
 import '@testing-library/jest-dom';
 import { expect } from '@jest/globals';
-import { initialState, feedsReducer, getFeedsThunk } from './feed-slice';
+import {
+  initialState,
+  feedsReducer,
+  getFeedsThunk
+} from '../slices/feed-slice';
 
 describe('Проверка слайса feeds', () => {
   const mockFeedsOrders = {

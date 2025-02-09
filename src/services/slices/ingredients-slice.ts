@@ -73,5 +73,4 @@ export const getIngredientsLoading = (state: {
   ingredients: TIngredientsState;
 }) => state.ingredients.loading;
 
-export {initialState}
- 
+export { initialState };

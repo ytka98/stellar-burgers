@@ -1,5 +1,5 @@
 import { test, expect } from '@jest/globals';
-import { configureStore, AsyncThunk } from '@reduxjs/toolkit';
+import { AsyncThunk } from '@reduxjs/toolkit';
 import '@testing-library/jest-dom';
 import {
   initialState,
@@ -16,10 +16,13 @@ import {
   getUserError,
   getUserIsAuth,
   getUser
-} from './user-slice';
+} from '../slices/user-slice';
 
 describe('Тестирование userSlice', () => {
-  const mockUserData = { email: 'NewUser123@example.com', name: 'New Test User' };
+  const mockUserData = {
+    email: 'TestUser456@example.com',
+    name: 'Alex Johnson'
+  };
 
   const createMockAction = (
     type: string,
@@ -31,7 +34,11 @@ describe('Тестирование userSlice', () => {
     error
   });
 
-  const testStateTransition = (action: any, initialState: any, expectedState: any) => {
+  const testStateTransition = (
+    action: any,
+    initialState: any,
+    expectedState: any
+  ) => {
     const newState = userReducer(initialState, action);
     expect(newState).toEqual(expectedState);
   };
@@ -58,28 +65,36 @@ describe('Тестирование userSlice', () => {
 
   // Тесты на асинхронные действия (pending, rejected, fulfilled)
   test.each<[string, AsyncThunk<any, any, any>]>([
-    ['registerUserAsyncThunk', registerUserAsyncThunk],
-    ['loginUserAsyncThunk', loginUserAsyncThunk],
-    ['fetchUserAsyncThunk', fetchUserAsyncThunk],
-    ['updateUserAsyncThunk', updateUserAsyncThunk]
-  ])('Должен корректно обрабатывать состояние pending для %s', (_, asyncThunk) => {
-    const action = createMockAction(asyncThunk.pending.type);
-    const expectedState = { ...initialState };
-    testStateTransition(action, initialState, expectedState);
-  });
-
+    ['Регистрация пользователя', registerUserAsyncThunk],
+    ['Вход пользователя', loginUserAsyncThunk],
+    ['Получение данных пользователя', fetchUserAsyncThunk],
+    ['Обновление данных пользователя', updateUserAsyncThunk]
+  ])(
+    'Должен корректно обрабатывать состояние pending для %s',
+    (description, asyncThunk) => {
+      console.log(description);
+      const action = createMockAction(asyncThunk.pending.type);
+      const expectedState = { ...initialState };
+      testStateTransition(action, initialState, expectedState);
+    }
+  );
+  
   test.each<[string, AsyncThunk<any, any, any>]>([
-    ['registerUserAsyncThunk', registerUserAsyncThunk],
-    ['loginUserAsyncThunk', loginUserAsyncThunk],
-    ['fetchUserAsyncThunk', fetchUserAsyncThunk],
-    ['updateUserAsyncThunk', updateUserAsyncThunk]
-  ])('Должен корректно обрабатывать состояние rejected для %s', (_, asyncThunk) => {
-    const action = createMockAction(asyncThunk.rejected.type, undefined, {
-      message: 'Ошибка'
-    });
-    const expectedState = { ...initialState, error: 'Ошибка' };
-    testStateTransition(action, initialState, expectedState);
-  });
+    ['Регистрация пользователя', registerUserAsyncThunk],
+    ['Вход пользователя', loginUserAsyncThunk],
+    ['Получение данных пользователя', fetchUserAsyncThunk],
+    ['Обновление данных пользователя', updateUserAsyncThunk]
+  ])(
+    'Должен корректно обрабатывать состояние rejected для %s',
+    (description, asyncThunk) => {
+      console.log(description);
+      const action = createMockAction(asyncThunk.rejected.type, undefined, {
+        message: 'Ошибка'
+      });
+      const expectedState = { ...initialState, error: 'Ошибка' };
+      testStateTransition(action, initialState, expectedState);
+    }
+  );
 
   test('Должен корректно обновлять состояние при успешной регистрации пользователя', () => {
     const action = createMockAction(registerUserAsyncThunk.fulfilled.type, {
@@ -129,7 +144,10 @@ describe('Тестирование userSlice', () => {
   // Тесты на селекторы
   test('Должен корректно возвращать данные пользователя из состояния', () => {
     const stateWithUser = { user: { ...initialState, user: mockUserData } };
-    expect(getUserData(stateWithUser)).toEqual({ ...initialState, user: mockUserData });
+    expect(getUserData(stateWithUser)).toEqual({
+      ...initialState,
+      user: mockUserData
+    });
     expect(getUserError(stateWithUser)).toEqual(null);
     expect(getUserIsAuth(stateWithUser)).toEqual(false);
     expect(getUser(stateWithUser)).toEqual(mockUserData);

@@ -1,35 +1,39 @@
-import { initialState, ordersReducer, getOrdersThunk } from './orders-slice';
+import {
+  initialState,
+  ordersReducer,
+  getOrdersThunk
+} from '../slices/orders-slice';
 import { expect } from '@jest/globals';
 
 describe('Тестирование слайса заказов', () => {
   const mockOrders = [
     {
-      _id: '675c8927750864001d37116e',
+      _id: '675d1234750864001d371200',
       ingredients: [
-        '643d69a5c3f7b9001cfa093c',
-        '643d69a5c3f7b9001cfa0941',
-        '643d69a5c3f7b9001cfa0942',
-        '643d69a5c3f7b9001cfa093c'
+        '643d69a5c3f7b9001cfa1001',
+        '643d69a5c3f7b9001cfa1002',
+        '643d69a5c3f7b9001cfa1003',
+        '643d69a5c3f7b9001cfa1001'
       ],
       status: 'done',
       name: 'Краторный spicy био-марсианский бургер',
-      createdAt: '2024-12-13T19:21:11.198Z',
-      updatedAt: '2024-12-13T19:21:12.139Z',
+      createdAt: '2025-02-09T15:30:45.123Z',
+      updatedAt: '2025-02-09T15:31:12.987Z',
       number: 62729
     },
     {
-      _id: '675c9296750864001d371198',
+      _id: '675d5678750864001d371250',
       ingredients: [
-        '643d69a5c3f7b9001cfa093d',
-        '643d69a5c3f7b9001cfa0941',
-        '643d69a5c3f7b9001cfa0940',
-        '643d69a5c3f7b9001cfa0943',
-        '643d69a5c3f7b9001cfa093d'
+        '643d69a5c3f7b9001cfa2001',
+        '643d69a5c3f7b9001cfa2002',
+        '643d69a5c3f7b9001cfa2003',
+        '643d69a5c3f7b9001cfa2004',
+        '643d69a5c3f7b9001cfa2001'
       ],
       status: 'done',
       name: 'Space флюоресцентный био-марсианский метеоритный бургер',
-      createdAt: '2024-12-13T20:01:26.739Z',
-      updatedAt: '2024-12-13T20:01:27.727Z',
+      createdAt: '2025-02-09T16:45:30.456Z',
+      updatedAt: '2025-02-09T16:46:10.789Z',
       number: 62743
     }
   ];

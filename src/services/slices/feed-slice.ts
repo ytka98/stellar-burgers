@@ -31,4 +31,4 @@ const feedsSlice = createSlice({
 
 export const feedsReducer = feedsSlice.reducer;
 export const getFeedsState = (state: { feeds: TFeed }) => state.feeds;
-export {initialState}
+export { initialState };

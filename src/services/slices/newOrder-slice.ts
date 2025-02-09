@@ -48,4 +48,4 @@ export const { clearOrder } = newOrder.actions;
 export const getNewOrderState = (state: { newOrder: TNewOrderState }) =>
   state.newOrder;
 
-export {initialState}
+export { initialState };

@@ -32,7 +32,7 @@ describe('Тестирование функционала конструктор
 
   describe('Процесс создания заказа', () => {
     describe('Добавление ингредиентов в заказ', () => {
-      const verifyIngredientAddition = (category, ingredientName, verificationText) => {
+      const addIngredientToOrder  = (category: string | number | RegExp, ingredientName: string | number | RegExp, verificationText: string | number | RegExp) => {
         cy.contains(verificationText).should('exist');  // Проверка наличия текста для выбора
         cy.get('h3')
           .contains(category)
@@ -46,15 +46,15 @@ describe('Тестирование функционала конструктор
 
       // ДОБАВЛЕНИЕ ИНГРЕДИЕНТА ИЗ СПИСКА ИНГРЕДИЕНТОВ В КОНСТРУКТОР.
       it('Добавление булки в заказ', () => {
-        verifyIngredientAddition('Булки', 'Добавить', 'Выберите булки');
+        addIngredientToOrder('Булки', 'Добавить', 'Выберите булки');
       });
 
       it('Добавление начинки в заказ', () => {
-        verifyIngredientAddition('Начинки', 'Добавить', 'Выберите начинку');
+        addIngredientToOrder('Начинки', 'Добавить', 'Выберите начинку');
       });
 
       it('Добавление соуса в заказ', () => {
-        verifyIngredientAddition('Соусы', 'Добавить', 'Выберите начинку');
+        addIngredientToOrder('Соусы', 'Добавить', 'Выберите начинку');
       });
     });
 
@@ -67,6 +67,9 @@ describe('Тестирование функционала конструктор
         }).as('postOrders');
 
         // Убедиться, что модальное окно не открыто
+
+        /* Изначально написал cy.get('#modals > div').should('be.visible'), но в пачке посоветовали использовать атрибуты data-cy для болшей надежности;*/
+
         cy.get('[data-cy=modal]').should('not.exist');
 
         // Добавление ингредиентов в заказ

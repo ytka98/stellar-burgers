@@ -4,7 +4,7 @@ import {
   initialState,
   ingredientsReducer,
   getIngredientsThunk
-} from './ingredients-slice';
+} from '../slices/ingredients-slice';
 
 describe('Проверка слайса ингредиентов бургера', () => {
   const mockIngredients = [
@@ -138,18 +138,20 @@ describe('Проверка слайса ингредиентов бургера'
   });
 
   // При вызове экшена Failed и передаче в него ошибки она записывается в стор (например, store.error) и store.isLoading меняется на false.
-  
+
   it('Обработка экшена getIngredientsThunk.rejected', () => {
     const errorMessage = 'Ошибка загрузки ингредиентов';
     const action = {
       type: getIngredientsThunk.rejected.type,
-      error: { message: errorMessage },
+      error: { message: errorMessage }
     };
-    const expectedState = getExpectedState({ loading: false, error: errorMessage });
+    const expectedState = getExpectedState({
+      loading: false,
+      error: errorMessage
+    });
     const newState = ingredientsReducer(initialState, action);
     expect(newState).toEqual(expectedState);
   });
-  
 
   it('Проверка уникальности названия каждого ингредиента', () => {
     const action = createAction(
@@ -165,5 +167,4 @@ describe('Проверка слайса ингредиентов бургера'
     // Проверка, что все названия уникальны
     expect(names.length).toBe(uniqueNames.size);
   });
-  
 });

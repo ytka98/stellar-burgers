@@ -7,7 +7,7 @@ import {
   removeItemFromConstructor,
   moveItemInConstructor,
   initialState
-} from './constructor-slice';
+} from '../slices/constructor-slice';
 
 type TIngredient = {
   _id: string;
@@ -26,46 +26,48 @@ type TIngredient = {
 
 const mockIngredients: Record<'bun' | 'main' | 'sauce', TIngredient> = {
   bun: {
-    _id:  "743e70b6d4f8c9002dfa194d",
-    name: "Краторная булка N-200i",
-    type: "bun",
+    _id: '743e70b6d4f8c9002dfa194d',
+    name: 'Краторная булка N-200i',
+    type: 'bun',
     proteins: 75,
     fat: 22,
     carbohydrates: 50,
     calories: 400,
     price: 1300,
-    image: "https://code.s3.yandex.net/react/code/bun-02.png",
-    image_mobile: "https://code.s3.yandex.net/react/code/bun-02-mobile.png",
-    image_large: "https://code.s3.yandex.net/react/code/bun-02-large.png",
-    id: "BunTestItemNew"
+    image: 'https://code.s3.yandex.net/react/code/bun-02.png',
+    image_mobile: 'https://code.s3.yandex.net/react/code/bun-02-mobile.png',
+    image_large: 'https://code.s3.yandex.net/react/code/bun-02-large.png',
+    id: 'BunTestItemNew'
   },
   main: {
-    _id: "743e70b6d4f8c9002dfa195e",
-    name: "Хрустящие минеральные кольца",
-    type: "main",
+    _id: '743e70b6d4f8c9002dfa195e',
+    name: 'Хрустящие минеральные кольца',
+    type: 'main',
     proteins: 820,
     fat: 700,
     carbohydrates: 620,
     calories: 1000,
     price: 310,
-    image: "https://code.s3.yandex.net/react/code/mineral_rings.png",
-    image_mobile: "https://code.s3.yandex.net/react/code/mineral_rings-mobile.png",
-    image_large: "https://code.s3.yandex.net/react/code/mineral_rings-large.png",
-    id: "MainDishTestNew"
+    image: 'https://code.s3.yandex.net/react/code/mineral_rings.png',
+    image_mobile:
+      'https://code.s3.yandex.net/react/code/mineral_rings-mobile.png',
+    image_large:
+      'https://code.s3.yandex.net/react/code/mineral_rings-large.png',
+    id: 'MainDishTestNew'
   },
   sauce: {
-    _id: "743e70b6d4f8c9002dfa196f",
-    name: "Соус Spicy-X",
-    type: "sauce",
+    _id: '743e70b6d4f8c9002dfa196f',
+    name: 'Соус Spicy-X',
+    type: 'sauce',
     proteins: 35,
     fat: 18,
     carbohydrates: 42,
     calories: 35,
     price: 95,
-    image: "https://code.s3.yandex.net/react/code/sauce-02.png",
-    image_mobile: "https://code.s3.yandex.net/react/code/sauce-02-mobile.png",
-    image_large: "https://code.s3.yandex.net/react/code/sauce-02-large.png",
-    id: "SauceTestItemNew"
+    image: 'https://code.s3.yandex.net/react/code/sauce-02.png',
+    image_mobile: 'https://code.s3.yandex.net/react/code/sauce-02-mobile.png',
+    image_large: 'https://code.s3.yandex.net/react/code/sauce-02-large.png',
+    id: 'SauceTestItemNew'
   }
 };
 
@@ -79,8 +81,8 @@ describe('Проверка слайса конструктора бургера'
       ...mockIngredients.bun,
       id: newState.bun?.id
     });
-  }); 
-  
+  });
+
   it('Добавление ингредиента: экшен выполняется правильно', () => {
     const newState = constructorReducer(
       initialState,
