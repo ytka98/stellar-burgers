@@ -40,7 +40,7 @@ describe('Тестирование функционала конструктор
           .contains(ingredientName)
           .click(); // Клик на добавление ингредиента
         cy.contains(verificationText).should('not.exist');  
-          // Проверка, что текст исчез
+        // Проверка, что текст исчез
         cy.log(`${ingredientName} из категории "${category}" успешно добавлен.`); // Логирование успешного добавления
       };
 
@@ -67,9 +67,6 @@ describe('Тестирование функционала конструктор
         }).as('postOrders');
 
         // Убедиться, что модальное окно не открыто
-
-        /* Изначально написал cy.get('#modals > div').should('be.visible'), но в пачке посоветовали использовать атрибуты data-cy для болшей надежности;*/
-
         cy.get('[data-cy=modal]').should('not.exist');
 
         // Добавление ингредиентов в заказ
@@ -129,11 +126,31 @@ describe('Тестирование функционала конструктор
     };
 
     it('Открытие модального окна с деталями ингредиента', () => {
+      // 1. Убедимся, что модального окна нет на экране
       cy.get('[data-cy=modal]').should('not.exist');
-      openModal();
-      cy.contains('Детали ингредиента').should('exist');  // Проверка наличия текста в модальном окне
+    
+      // Кликаем по ингредиенту и сохраняем его имя
+      cy.get('@ingredient')
+        .as('selectedIngredient')
+        .find('[data-testid="ingredient-name"]')
+        .invoke('text')
+        .as('ingredientName');
+    
+      // 2. Открываем модальное окно
+      cy.get('@selectedIngredient').click();
+    
+      // Проверяем, что модальное окно появилось
+      cy.get('[data-cy=modal]').should('exist');
+    
+      // 3. Проверяем, что отображается информация именно о выбранном ингредиенте
+      cy.get('@ingredientName').then((ingredientName) => {
+        cy.get('[data-cy=modal]').within(() => {
+          cy.contains(String(ingredientName)).should('exist'); 
+          cy.contains('Детали ингредиента').should('exist');
+        });
+      });
     });
-
+    
     it('Закрытие модального окна по кнопке', () => {
       openModal();
       closeModal();
